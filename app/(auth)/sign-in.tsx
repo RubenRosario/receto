@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import {
 	View,
 	Text,
@@ -6,24 +6,24 @@ import {
 	TouchableOpacity,
 	Keyboard,
 	TouchableWithoutFeedback,
-} from 'react-native';
-import { supabase } from '../../lib/supabase';
-import { Link } from 'expo-router';
+} from 'react-native'
+import { supabase } from '../../lib/supabase'
+import { Link } from 'expo-router'
 
 export default function SignIn() {
 	const [email, setEmail] = useState<string>('')
 	const [password, setPassword] = useState<string>('')
 	const [loading, setLoading] = useState<boolean>(false)
-	const [error, setError] = useState<string|null>(null)
+	const [error, setError] = useState<string | null>(null)
 
 	const handleSignIn = () => {
-		setLoading(true);
-		supabase.auth.signInWithPassword({ email, password}).then(({error}) => {
-			if(error){
-				setError(error.message);
+		setLoading(true)
+		supabase.auth.signInWithPassword({ email, password }).then(({ error }) => {
+			if (error) {
+				setError(error.message)
 			}
-			setLoading(false);
-		});
+			setLoading(false)
+		})
 	}
 
 	return (
@@ -34,7 +34,6 @@ export default function SignIn() {
 					placeholder='Email'
 					value={email}
 					onChangeText={setEmail}
-
 				/>
 				<TextInput
 					className='w-full border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900'
@@ -45,9 +44,11 @@ export default function SignIn() {
 					onChangeText={setPassword}
 				/>
 
-				<TouchableOpacity className='w-full bg-black py-4 rounded-xl items-center' onPress={handleSignIn}>
+				<TouchableOpacity
+					className='w-full bg-black py-4 rounded-xl items-center'
+					onPress={handleSignIn}>
 					<Text className='text-white font-semibold text-base'>
-						{loading ?  'Loading...' : 'Sign In'}
+						{loading ? 'Loading...' : 'Sign In'}
 					</Text>
 				</TouchableOpacity>
 
@@ -58,7 +59,9 @@ export default function SignIn() {
 					</Link>
 				</Text>
 
-				{error && !loading && <Text className='text-red-500 font-semibold'>Sign In failed!</Text>}
+				{error && !loading && (
+					<Text className='text-red-500 font-semibold'>{error}</Text>
+				)}
 			</View>
 		</TouchableWithoutFeedback>
 	)
