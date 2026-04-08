@@ -59,6 +59,15 @@ export default function Scan() {
 			Alert.alert('Insert Error', insertError.message)
 			return
 		}
+
+		const {error} = await supabase.functions.invoke('parse-receipt', {
+			body: {receiptId, imagePath: uploadData.path}
+		})
+
+		if (error){
+			Alert.alert('Parse Error', error.message)
+			return
+		}
 	}
 
 	if (!permission) {
