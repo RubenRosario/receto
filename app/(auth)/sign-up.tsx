@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import {
 	View,
 	Text,
@@ -6,24 +6,30 @@ import {
 	TouchableOpacity,
 	Keyboard,
 	TouchableWithoutFeedback,
-} from 'react-native';
-import { supabase } from '../../lib/supabase';
-import { Link } from 'expo-router';
+} from 'react-native'
+import { supabase } from '../../lib/supabase'
+import { Link } from 'expo-router'
 
 export default function SignUp() {
 	const [email, setEmail] = useState<string>('')
 	const [password, setPassword] = useState<string>('')
 	const [loading, setLoading] = useState<boolean>(false)
-	const [error, setError] = useState<string|null>(null)
+	const [error, setError] = useState<string | null>(null)
 
-	const handleSignUp = () => {
-		setLoading(true);
-		supabase.auth.signUp({ email, password}).then(({error}) => {
-			if(error){
-				setError(error.message);
-			}
-			setLoading(false);
-		});
+	const handleSignUp = async () => {
+		setLoading(true)
+		const { data, error } = await supabase.auth.signUp({ email, password })
+
+		if (error) {
+			setError(error.message)
+			setLoading(false)
+			return
+		}
+
+		if (data.user) {
+			await supabase.from('profiles').insert({ id: data.user.id })
+		}
+		setLoading(false)
 	}
 
 	return (
@@ -34,7 +40,6 @@ export default function SignUp() {
 					placeholder='Email'
 					value={email}
 					onChangeText={setEmail}
-
 				/>
 				<TextInput
 					className='w-full border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900'
@@ -45,9 +50,11 @@ export default function SignUp() {
 					onChangeText={setPassword}
 				/>
 
-				<TouchableOpacity className='w-full bg-black py-4 rounded-xl items-center' onPress={handleSignUp}>
+				<TouchableOpacity
+					className='w-full bg-black py-4 rounded-xl items-center'
+					onPress={handleSignUp}>
 					<Text className='text-white font-semibold text-base'>
-						{loading ?  'Loading...' : 'Sign Up'}
+						{loading ? 'Loading...' : 'Sign Up'}
 					</Text>
 				</TouchableOpacity>
 
@@ -58,7 +65,9 @@ export default function SignUp() {
 					</Link>
 				</Text>
 
-				{error && !loading && <Text className='text-red-500 font-semibold'>Sign Up failed!</Text>}
+				{error && !loading && (
+					<Text className='text-red-500 font-semibold'>Sign Up failed!</Text>
+				)}
 			</View>
 		</TouchableWithoutFeedback>
 	)
