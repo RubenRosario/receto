@@ -124,6 +124,7 @@ Deno.serve(async (req) => {
 	}
 
 	return new Response(JSON.stringify(parsed), {
+    status: 200,
 		headers: { 'Content-Type': 'application/json' },
 	})
 })

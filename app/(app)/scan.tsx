@@ -68,6 +68,9 @@ export default function Scan() {
 			Alert.alert('Parse Error', error.message)
 			return
 		}
+
+		// go to review screen for reviewing the parsed data
+		router.push(`/review/${receiptId}`)
 	}
 
 	if (!permission) {
