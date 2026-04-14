@@ -52,17 +52,29 @@ export default function Review() {
 		fetchReceipt()
 	}, [])
 
+	const handleInputChange = (field: string, value: string, itemId?: string) => {
+		if (itemId) {
+			setItems((prev) =>
+				prev.map((item) =>
+					item.id === itemId ? { ...item, [field]: value } : item,
+				),
+			)
+		} else {
+			setReceipt((prev) => (prev ? { ...prev, [field]: value } : prev))
+		}
+	}
+
 	const handleConfirmBtn = async () => {
+		// update the receipts if data changed
+
 		const { data, error } = await supabase
 			.from('receipts')
 			.update({ parse_status: 'confirmed' })
 			.eq('id', id)
 
 		if (error) {
-			console.log(error)
 			Alert.alert('Confirmation error:', error.message)
 		}
-		console.log(data)
 		router.replace('/')
 	}
 
@@ -72,11 +84,13 @@ export default function Review() {
 			<TextInput
 				className='w-full border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900'
 				value={receipt?.vendor}
+				onChangeText={(value) => handleInputChange('vendor', value)}
 			/>
 			<Text className='text-sm text-gray-500 mb-1'>Date</Text>
 			<TextInput
 				className='w-full border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900'
 				value={receipt?.receipt_date}
+				onChangeText={(value) => handleInputChange('receipt_date', value)}
 			/>
 			<Text className='text-sm text-gray-500 mb-1'>Items</Text>
 			{items.map((item) => (
@@ -85,11 +99,13 @@ export default function Review() {
 						className='border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900'
 						numberOfLines={1}
 						value={item.name ?? 'unknown'}
+						onChangeText={(value) => handleInputChange('name', value, item.id)}
 					/>
 					<TextInput
 						className='border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900'
 						numberOfLines={1}
 						value={String(item.line_total) ?? 0}
+						onChangeText={(value) => handleInputChange('line_total', value, item.id)}
 					/>
 				</View>
 			))}
@@ -97,6 +113,7 @@ export default function Review() {
 			<TextInput
 				className='w-full border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900'
 				value={String(receipt?.total)}
+				onChangeText={(value) => handleInputChange('total', value)}
 			/>
 			<TouchableOpacity
 				className='w-full bg-black py-4 rounded-xl items-center absolute bottom-8 self-center'

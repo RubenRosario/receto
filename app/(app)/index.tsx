@@ -4,6 +4,7 @@ import { Receipt } from '../../types/receipts'
 import { supabase } from '../../lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'expo-router'
+import ReceiptCard from '../../components/ReceiptCard'
 
 export default function HomeScreen() {
 	const [receipts, setReceipts] = useState<Receipt[]>([])
@@ -42,15 +43,13 @@ export default function HomeScreen() {
 	}, [])
 
 	return (
-		<View className='flex-1 flex-col items-center justify-center'>
+		<View className='flex-1 justify-center'>
 			<Text>Recent</Text>
 			<FlatList
 				data={receipts}
 				keyExtractor={(item) => item.id}
 				renderItem={({ item }) => (
-					<View>
-						<Text>{item.vendor ?? 'unknown vendor'}</Text>
-					</View>
+					<ReceiptCard receipt={item} />
 				)}
 				ListEmptyComponent={<Text>No receipts yet</Text>}
 			/>
